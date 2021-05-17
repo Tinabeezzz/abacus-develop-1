@@ -265,12 +265,12 @@ bool Stochastic_Chebychev::checkconverge(
     sum1=Diago_CG::ddot_real(ndim,arrayn_1,arrayn_1);
     sum2=Diago_CG::ddot_real(ndim,arrayn_1,arrayn);
     t = sum2 / sum1 * (tmax - tmin) / 2 + (tmax + tmin) / 2;
-    if(t < tmin)
+    if(t < tmin || tmin == 0)
     {
         converge = false;
         tmin = t-stept;
     }
-    else if(t > tmax)
+    if(t > tmax)
     {
         converge = false;
         tmax = t+stept;

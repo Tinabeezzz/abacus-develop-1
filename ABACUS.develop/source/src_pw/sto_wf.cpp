@@ -64,9 +64,14 @@ void Stochastic_WF::init(void)
     chi0 = new ComplexMatrix[1]; 
     
     
-    //srand((unsigned)time(NULL)+MY_RANK*10000);
-    srand((unsigned)MY_RANK*10000);
-    //srand((unsigned)0);
+    
+    if(seed_sto == 0)
+        srand((unsigned)time(NULL)+MY_RANK*10000);
+    else
+    {
+        srand((unsigned)abs(seed_sto)+MY_RANK*10000);
+    }
+
     
     if(allbase)
     {

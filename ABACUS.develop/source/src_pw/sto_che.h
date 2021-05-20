@@ -64,6 +64,7 @@ class Stochastic_Chebychev
 	bool initcoef;
 	bool getcoef;
 	bool getpolyval;
+	bool warn;
 
     private:
 

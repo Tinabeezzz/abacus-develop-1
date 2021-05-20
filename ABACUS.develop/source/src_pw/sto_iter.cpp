@@ -223,10 +223,13 @@ void Stochastic_Iter::itermu(int &iter)
         if(count > 60)
         {
             cout<<"Fermi energy cannot be converged. Set THNE to "<<th_ne<<endl;
-            th_ne *= 1e4;
+            th_ne *= 1e1;
+            if(th_ne > 1e1) WARNING_QUIT("Stochastic_Iter",
+                                         "Cannot converge feimi energy. Please retry with different random number");
         }
     }
     cout<<"Converge fermi energy = "<<mu<<" Ry in "<<count<<" steps."<<endl;
+    cout<<"Chebyshev Precision: "<<abs(stoche.coef[stoche.norder-1]/stoche.coef[0])<<endl;
 
     en.ef = mu = mu0 = mu3;
     

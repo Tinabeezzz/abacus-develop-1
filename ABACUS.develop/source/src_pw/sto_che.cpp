@@ -15,6 +15,7 @@ Stochastic_Chebychev::Stochastic_Chebychev()
     coef = new double [1];
     ccoef = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) *1);
     dcoef = (double *) fftw_malloc(sizeof(double) * 1);
+    warn = false;
 }
 
 Stochastic_Chebychev::~Stochastic_Chebychev()
@@ -105,11 +106,15 @@ void Stochastic_Chebychev::calcoef(double fun(double))
         {
             coef[i] += real(pcoef[i]) / norder2 * 2 / 3;
         }
-    }
-    if( coef[norder-1]/coef[0] > 1e-9 )
+    } 
+    if(!warn)
     {
-        WARNING("Stochastic_Chebychev", 
-		"(coef[norder-1]/coef[0] > 1e-9) Please add more expansion terms for Chebychev expansion.");
+        if( coef[norder-1]/coef[0] > 1e-9 )
+        {
+            WARNING("Stochastic_Chebychev", 
+		    "(coef[norder-1]/coef[0] > 1e-9) Please add more expansion terms for Chebychev expansion.");
+            warn = true;
+        }
     }
     getcoef = true;
 	return;

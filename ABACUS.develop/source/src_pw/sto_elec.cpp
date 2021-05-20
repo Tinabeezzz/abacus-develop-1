@@ -25,7 +25,7 @@ void Stochastic_Elec::scf_stochastic(const int &istep)
 	H_Ewald_pw::compute_ewald(ucell,pw); 
 
 
-    ETHR = 1.0e-4/ucell.nelec;
+    ETHR = 1.0e-2/ucell.nelec;
 	//ETHR = 1.0e-2;
 
     
@@ -95,14 +95,14 @@ void Stochastic_Elec::scf_stochastic(const int &istep)
         //this->update_ethr(iter);
         if(FINAL_SCF && iter==1) 
 		{
-			ETHR = 1.0e-4/ucell.nelec; //smaller ETHR than KS-DFT
+			ETHR = 1.0e-2/ucell.nelec; //smaller ETHR than KS-DFT
 		}
         else if(iter > 1)
 		{
 			if (iter == 2)
         	{
 				//ETHR = 1.0e-2;
-            	ETHR = 1.0e-4/ucell.nelec;
+            	ETHR = 1.0e-2/ucell.nelec;
         	}
 			ETHR = std::min( ETHR, 0.1*dr2/ std::max(1.0, ucell.nelec));
         }

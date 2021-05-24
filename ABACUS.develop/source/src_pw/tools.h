@@ -20,7 +20,6 @@ using namespace std;
 #include "../src_global/constants.h"
 #include "../src_global/vector3.h"
 #include "../src_global/matrix.h"
-#include "../src_global/matrix3.h"
 #include "../src_global/realarray.h"
 #include "../src_global/intarray.h"
 #include "../src_global/complexarray.h"
@@ -28,8 +27,6 @@ using namespace std;
 
 #include "../src_global/memory.h"
 #include "../src_global/timer.h"
-//#include "../src_global/lapack_connector.h"
-#include "../src_global/export.h"
 
 #include "../src_global/mathzone.h"
 #include "../src_global/mathzone_add1.h"

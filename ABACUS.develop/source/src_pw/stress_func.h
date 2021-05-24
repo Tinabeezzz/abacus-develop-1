@@ -83,23 +83,30 @@ class Stress_Func
 // 6) the stress from the exchange-correlation functional term
 	void stress_gga(matrix& sigma);			//gga part in both PW and LCAO basis
 
+
 // 7) the stress from the non-local pseudopotentials
-	void stress_nl(matrix& sigma);			//nonlocal part in PW basis
+	// nonlocal parts in pw basis sets
+	void stress_nl(matrix& sigma,
+		const int &nbands, // number of bands
+		const int &npwx); // max number of plane waves
 
 
 	void get_dvnl1(
 			ComplexMatrix &vkb,
 			const int ik,
 			const int ipol);	//used in nonlocal part in PW basis
+
 	void dylmr2 (
 			const int nylm,
 			const int ngy,
 			Vector3<double> *gk,
 			matrix &dylm,
 			const int ipol);	//used in get_dvnl1()
+
 	void get_dvnl2(
 			ComplexMatrix &vkb,
 			const int ik);		//used in nonlocal part in PW basis
+
 	double Polynomial_Interpolation_nl(
 			const realArray &table,
 			const int &dim1,
@@ -117,11 +124,3 @@ class Stress_Func
 };
 
 #endif
-
-
-
-
-
-
-
-

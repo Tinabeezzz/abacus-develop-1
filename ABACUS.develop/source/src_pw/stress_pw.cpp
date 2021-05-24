@@ -74,7 +74,7 @@ void Stress_PW::cal_stress(matrix& sigmatot)
     stress_cc(sigmaxcc, 1);
    
     //nonlocal
-	stress_nl(sigmanl);
+	stress_nl(sigmanl, NBANDS, wf.npwx);
 
 	//vdw term
 	stress_vdw(sigmavdw);

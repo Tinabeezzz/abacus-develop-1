@@ -28,7 +28,7 @@ using namespace std;
 
 #include "../src_global/memory.h"
 #include "../src_global/timer.h"
-#include "../src_global/lapack_connector.h"
+//#include "../src_global/lapack_connector.h"
 #include "../src_global/export.h"
 
 #include "../src_global/mathzone.h"

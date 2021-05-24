@@ -1,4 +1,5 @@
 #include "inverse_matrix.h"
+#include "../src_global/lapack_connector.h"
 
 Inverse_Matrix_Complex::Inverse_Matrix_Complex()
 {

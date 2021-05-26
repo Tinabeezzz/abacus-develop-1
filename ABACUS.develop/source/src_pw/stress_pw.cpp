@@ -52,7 +52,7 @@ void Stress_PW::cal_stress(matrix& sigmatot)
 	}
 
 	//kinetic contribution
-	stress_kin(sigmakin);
+	stress_kin(sigmakin, kv);
 	
 	//hartree contribution
 	stress_har(sigmahar, 1);

@@ -66,13 +66,6 @@ void Stress_Func::stress_har(matrix& sigma, const bool is_pw)
 		g[0]=pw.gcar[ig].x;
 		g[1]=pw.gcar[ig].y;
 		g[2]=pw.gcar[ig].z;
-        //test
-
-        //   cout<<"g "<<g[0]<<" "<<g[1]<<" "<<g[2]<<endl;
-        //   cout<<"gg "<<pw.gg[i]<<" "<<pw.gcar[i].norm2()<<endl;
-        //   cout<<"Porter "<<Porter[j]<<endl;
-        //   cout<<"tpiba2 "<<ucell.tpiba2<<endl;
-
 
 		for(int l=0;l<3;l++)
 		{
@@ -82,6 +75,7 @@ void Stress_Func::stress_har(matrix& sigma, const bool is_pw)
 			}
 		}
 	}
+
 //	Parallel_Reduce::reduce_double_pool( en.ehart );
 //	ehart *= 0.5 * ucell.omega;
         //cout<<"ehart "<<ehart<<" en.ehart "<< en.ehart<<endl;

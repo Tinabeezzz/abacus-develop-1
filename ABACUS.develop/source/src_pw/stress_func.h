@@ -3,6 +3,7 @@
 
 #include "tools.h"
 #include "./global.h"
+#include "klist.h"
 
 //-------------------------------------------------------------------
 // mohan reconstruction note: 2021-02-07
@@ -48,7 +49,9 @@ class Stress_Func
 
 //stress functions
 // 1) the stress from the electron kinetic energy
-	void stress_kin(matrix& sigma);  //electron kinetic part in PW basis
+	void stress_kin(
+		matrix& sigma,
+		kvect &kp);  //electron kinetic part in PW basis
 
 // 2) the stress from the Hartree term
 	void stress_har(matrix& sigma, const bool is_pw);  //hartree part in PW or LCAO basis

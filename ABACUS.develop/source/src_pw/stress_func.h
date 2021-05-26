@@ -4,6 +4,7 @@
 #include "tools.h"
 #include "./global.h"
 #include "klist.h"
+#include "pw_basis.h"
 
 //-------------------------------------------------------------------
 // mohan reconstruction note: 2021-02-07
@@ -47,20 +48,23 @@ class Stress_Func
 	Stress_Func(){};
 	~Stress_Func(){};
 
-//stress functions
-// 1) the stress from the electron kinetic energy
+	//stress functions
+	// 1) the stress from the electron kinetic energy
 	void stress_kin(
 		matrix& sigma,
 		kvect &kp);  //electron kinetic part in PW basis
 
-// 2) the stress from the Hartree term
-	void stress_har(matrix& sigma, const bool is_pw);  //hartree part in PW or LCAO basis
+	// 2) the stress from the Hartree term
+	void stress_har(
+		matrix& sigma, 
+		const bool is_pw,
+		PW_Basis &pwb);  //hartree part in PW or LCAO basis
 
-// 3) the stress from the ewald term (ion-ion intraction under 
-//		periodic boundary conditions). 
+	// 3) the stress from the ewald term (ion-ion intraction under 
+	//		periodic boundary conditions). 
 	void stress_ewa(matrix& sigma, const bool is_pw);     //ewald part in PW or LCAO basis
 
-// 4) the stress from the local pseudopotentials
+	// 4) the stress from the local pseudopotentials
 	void stress_loc(matrix& sigma, const bool is_pw);  //local pseudopotential part in PW or LCAO
 	
 	void dvloc_of_g (const int& msh,
@@ -72,7 +76,7 @@ class Stress_Func
 
 	void dvloc_coul (const double& zp, double* dvloc); //used in local pseudopotential stress
 
-// 5) the stress from the non-linear core correction (if any)
+	// 5) the stress from the non-linear core correction (if any)
 	void stress_cc(matrix& sigma, const bool is_pw); 			//nonlinear core correction stress in PW or LCAO basis
 
 	void deriv_drhoc (
@@ -83,11 +87,11 @@ class Stress_Func
 			const double *rhoc,
 			double *drhocg);	//used in nonlinear core correction stress
 
-// 6) the stress from the exchange-correlation functional term
+	// 6) the stress from the exchange-correlation functional term
 	void stress_gga(matrix& sigma);			//gga part in both PW and LCAO basis
 
 
-// 7) the stress from the non-local pseudopotentials
+	// 7) the stress from the non-local pseudopotentials
 	// nonlocal parts in pw basis sets
 	void stress_nl(matrix& sigma,
 		const int &nbands, // number of bands

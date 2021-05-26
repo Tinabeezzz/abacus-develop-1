@@ -55,7 +55,7 @@ void Stress_PW::cal_stress(matrix& sigmatot)
 	stress_kin(sigmakin, kv);
 	
 	//hartree contribution
-	stress_har(sigmahar, 1);
+	stress_har(sigmahar, 1, pw);
 
     //ewald contribution
     stress_ewa(sigmaewa, 1);

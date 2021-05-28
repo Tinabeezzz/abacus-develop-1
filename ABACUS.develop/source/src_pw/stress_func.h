@@ -77,7 +77,10 @@ class Stress_Func
 	void dvloc_coul (const double& zp, double* dvloc); //used in local pseudopotential stress
 
 	// 5) the stress from the non-linear core correction (if any)
-	void stress_cc(matrix& sigma, const bool is_pw); 			//nonlinear core correction stress in PW or LCAO basis
+	void stress_cc(
+			matrix& sigma,
+			const bool is_pw,
+			PW_Basis &pwb); 			//nonlinear core correction stress in PW or LCAO basis
 
 	void deriv_drhoc (
 			const bool &numeric,
@@ -85,7 +88,8 @@ class Stress_Func
 			const double *r,
 			const double *rab,
 			const double *rhoc,
-			double *drhocg);	//used in nonlinear core correction stress
+			double *drhocg,
+			PW_Basis &pwb);	//used in nonlinear core correction stress
 
 	// 6) the stress from the exchange-correlation functional term
 	void stress_gga(matrix& sigma);			//gga part in both PW and LCAO basis

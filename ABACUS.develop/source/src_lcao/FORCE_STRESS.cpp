@@ -696,7 +696,7 @@ void Force_Stress_LCAO::calStressPwPart(
 	//--------------------------------------------------------
 	// stress due to core correlation. 
 	//--------------------------------------------------------
-	sc_pw.stress_cc(sigmacc, 0);
+	sc_pw.stress_cc(sigmacc, 0, pw);
 
 	//--------------------------------------------------------
 	// stress due to self-consistent charge.

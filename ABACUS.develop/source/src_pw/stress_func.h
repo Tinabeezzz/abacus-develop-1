@@ -95,7 +95,9 @@ class Stress_Func
 			PW_Basis &pwb);	//used in nonlinear core correction stress
 
 	// 6) the stress from the exchange-correlation functional term
-	void stress_gga(matrix& sigma);			//gga part in both PW and LCAO basis
+	void stress_gga(
+			matrix& sigma,
+			PW_Basis &pwb);			//gga part in both PW and LCAO basis
 
 
 	// 7) the stress from the non-local pseudopotentials

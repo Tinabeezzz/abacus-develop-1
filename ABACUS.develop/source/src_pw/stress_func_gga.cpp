@@ -4,7 +4,9 @@
 #include "./xc_gga_pw.h"
 
 //calculate the GGA stress correction in PW and LCAO
-void Stress_Func::stress_gga(matrix& sigma) 
+void Stress_Func::stress_gga(
+	matrix& sigma,
+	PW_Basis &pwb) 
 {
 	timer::tick("Stress_Func","stress_gga",'F');
      
@@ -41,34 +43,34 @@ void Stress_Func::stress_gga(matrix& sigma)
 	Vector3<double>* gdr1;
 	Vector3<double>* gdr2;
  
-	rhotmp1 = new double[pw.nrxx];
-	rhogsum1 = new complex<double>[pw.ngmc];
-	ZEROS(rhotmp1, pw.nrxx);
-	ZEROS(rhogsum1, pw.ngmc);
-	for(int ir=0; ir<pw.nrxx; ir++) rhotmp1[ir] = CHR.rho[0][ir] + fac * CHR.rho_core[ir];
-	for(int ig=0; ig<pw.ngmc; ig++) rhogsum1[ig] = CHR.rhog[0][ig] + fac * CHR.rhog_core[ig];
-	gdr1 = new Vector3<double>[pw.nrxx];
-	ZEROS(gdr1, pw.nrxx);
+	rhotmp1 = new double[pwb.nrxx];
+	rhogsum1 = new complex<double>[pwb.ngmc];
+	ZEROS(rhotmp1, pwb.nrxx);
+	ZEROS(rhogsum1, pwb.ngmc);
+	for(int ir=0; ir<pwb.nrxx; ir++) rhotmp1[ir] = CHR.rho[0][ir] + fac * CHR.rho_core[ir];
+	for(int ig=0; ig<pwb.ngmc; ig++) rhogsum1[ig] = CHR.rhog[0][ig] + fac * CHR.rhog_core[ig];
+	gdr1 = new Vector3<double>[pwb.nrxx];
+	ZEROS(gdr1, pwb.nrxx);
 
 	GGA_PW::grad_rho( rhogsum1 , gdr1 );
 
 	if(NSPIN==2)
 	{
-		rhotmp2 = new double[pw.nrxx];
-		rhogsum2 = new complex<double>[pw.ngmc];
-		ZEROS(rhotmp2, pw.nrxx);
-		ZEROS(rhogsum2, pw.ngmc);
-		for(int ir=0; ir<pw.nrxx; ir++)
+		rhotmp2 = new double[pwb.nrxx];
+		rhogsum2 = new complex<double>[pwb.ngmc];
+		ZEROS(rhotmp2, pwb.nrxx);
+		ZEROS(rhogsum2, pwb.ngmc);
+		for(int ir=0; ir<pwb.nrxx; ir++)
 		{
 			rhotmp2[ir] = CHR.rho[1][ir] + fac * CHR.rho_core[ir];
 		}
-		for(int ig=0; ig<pw.ngmc; ig++)
+		for(int ig=0; ig<pwb.ngmc; ig++)
 		{
 			rhogsum2[ig] = CHR.rhog[1][ig] + fac * CHR.rhog_core[ig];
 		}
 		
-		gdr2 = new Vector3<double>[pw.nrxx];
-		ZEROS(gdr2, pw.nrxx);
+		gdr2 = new Vector3<double>[pwb.nrxx];
+		ZEROS(gdr2, pwb.nrxx);
 
 		GGA_PW::grad_rho( rhogsum2 , gdr2 );
 	}
@@ -90,7 +92,7 @@ void Stress_Func::stress_gga(matrix& sigma)
 	if(NSPIN==1||NSPIN==4)
 	{
 		double segno;
-		for(int ir=0; ir<pw.nrxx; ir++)
+		for(int ir=0; ir<pwb.nrxx; ir++)
 		{
 			const double arho = std::abs( rhotmp1[ir] );
 			if(arho > epsr)
@@ -98,8 +100,14 @@ void Stress_Func::stress_gga(matrix& sigma)
 				grho2a = gdr1[ir].norm2();
 				if( grho2a > epsg )
 				{
-					if( rhotmp1[ir] >= 0.0 ) segno = 1.0;
-					if( rhotmp1[ir] < 0.0 ) segno = -1.0;
+					if( rhotmp1[ir] >= 0.0 )
+					{
+						 segno = 1.0;
+					}
+					if( rhotmp1[ir] < 0.0 )
+					{
+						 segno = -1.0;
+					}
 
 					XC_Functional::gcxc( arho, grho2a, sx, sc, v1x, v2x, v1c, v2c);
 					double tt[3];
@@ -129,7 +137,7 @@ void Stress_Func::stress_gga(matrix& sigma)
 		double v2xdw = 0.0;
 		double v2cud = 0.0;
 		double v2c = 0.0;
-		for(int ir=0; ir<pw.nrxx; ir++)
+		for(int ir=0; ir<pwb.nrxx; ir++)
 		{
 			double rh = rhotmp1[ir] + rhotmp2[ir];
 			grho2a = gdr1[ir].norm2();;
@@ -209,7 +217,7 @@ void Stress_Func::stress_gga(matrix& sigma)
 /*	p= &sigma_gradcorr[0][0];
 	double* p1 = &sigmaxc[0][0];
 	for(int i=0;i<9;i++){
-		*p /= pw.ncxyz ;
+		*p /= pwb.ncxyz ;
 		*p1++ += *p++;  
 	}*/
 	
@@ -217,7 +225,7 @@ void Stress_Func::stress_gga(matrix& sigma)
 	{
 		for(int j=0;j<3;j++)
 		{
-			sigma(i,j) += sigma_gradcorr[i][j] / pw.ncxyz;
+			sigma(i,j) += sigma_gradcorr[i][j] / pwb.ncxyz;
 		}
 	}
 

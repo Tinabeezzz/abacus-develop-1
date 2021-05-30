@@ -65,7 +65,7 @@ void Stress_PW::cal_stress(matrix& sigmatot)
 	{
        sigmaxc(i,i) = - (H_XC_pw::etxc - H_XC_pw::vtxc) / ucell.omega;
     }
-    stress_gga(sigmaxc);
+    stress_gga(sigmaxc, pw);
 
     //local contribution
     stress_loc(sigmaloc, 1);

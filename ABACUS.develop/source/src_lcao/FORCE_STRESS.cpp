@@ -690,7 +690,7 @@ void Force_Stress_LCAO::calStressPwPart(
 	//--------------------------------------------------------
 	// ewald stress: use plane wave only.
 	//--------------------------------------------------------
-    sc_pw.stress_ewa (sigmaewa, 0); //remain problem
+    sc_pw.stress_ewa (sigmaewa, 0, pw); //remain problem
 
 
 	//--------------------------------------------------------

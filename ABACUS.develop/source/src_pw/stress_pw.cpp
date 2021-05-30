@@ -68,7 +68,7 @@ void Stress_PW::cal_stress(matrix& sigmatot)
     stress_gga(sigmaxc, pw);
 
     //local contribution
-    stress_loc(sigmaloc, 1);
+    stress_loc(sigmaloc, 1, pw);
     
     //nlcc
     stress_cc(sigmaxcc, 1, pw);

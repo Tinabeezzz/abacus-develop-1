@@ -68,16 +68,21 @@ class Stress_Func
 	PW_Basis &pwb);     //ewald part in PW or LCAO basis
 
 	// 4) the stress from the local pseudopotentials
-	void stress_loc(matrix& sigma, const bool is_pw);  //local pseudopotential part in PW or LCAO
+	void stress_loc(matrix& sigma,
+			const bool is_pw,
+			PW_Basis &pwb);  //local pseudopotential part in PW or LCAO
 	
 	void dvloc_of_g (const int& msh,
 			const double* rab,
 			const double* r,
 			const double* vloc_at,
 			const double& zp,
-			double*  dvloc);	//used in local pseudopotential stress
+			double*  dvloc,
+		        PW_Basis &pwb);	//used in local pseudopotential stress
 
-	void dvloc_coul (const double& zp, double* dvloc); //used in local pseudopotential stress
+	void dvloc_coul (const double& zp,
+			 double* dvloc,
+			 PW_Basis &pwb); //used in local pseudopotential stress
 
 	// 5) the stress from the non-linear core correction (if any)
 	void stress_cc(

@@ -27,22 +27,64 @@ void Stress_Func::print_stress(const string &name, const matrix& f, const bool s
 	for (int i=0;i<3;i++)
 	{
 		ofs_running << setw(15)<< " ";
-		if( abs(f(i,0)) >output_acc) ofs_running << setw(15) << f(i,0) * fac;
-		else ofs_running << setw(15) << "0";
-		if( abs(f(i,1)) >output_acc) ofs_running << setw(15) << f(i,1) * fac;
-		else ofs_running << setw(15) << "0";
-		if( abs(f(i,2)) >output_acc) ofs_running << setw(15) << f(i,2) * fac;
-		else ofs_running << setw(15) << "0";
+
+		if( abs(f(i,0)) >output_acc)
+		{
+			ofs_running << setw(15) << f(i,0) * fac;
+
+		}
+		else
+		{
+			ofs_running << setw(15) << "0";
+		}
+
+		if( abs(f(i,1)) >output_acc)
+		{
+			ofs_running << setw(15) << f(i,1) * fac;
+		}
+		else
+		{
+			ofs_running << setw(15) << "0";
+		}
+
+		if( abs(f(i,2)) >output_acc)
+		{
+			ofs_running << setw(15) << f(i,2) * fac;
+		}
+		else
+		{
+			ofs_running << setw(15) << "0";
+		}
 		ofs_running << endl;
 
 		if(screen)
 		{
-			if( abs(f(i,0)) >output_acc) cout << setw(15) << f(i,0)*fac;
-			else cout << setw(15) << "0";
-			if( abs(f(i,1)) >output_acc) cout << setw(15) << f(i,1)*fac;
-			else cout << setw(15) << "0";
-			if( abs(f(i,2)) >output_acc) cout << setw(15) << f(i,2)*fac;
-			else cout << setw(15) << "0";
+			if( abs(f(i,0)) >output_acc)
+			{
+				cout << setw(15) << f(i,0)*fac;
+			}
+			else
+			{
+				cout << setw(15) << "0";
+			}
+			
+			if( abs(f(i,1)) >output_acc)
+			{
+				cout << setw(15) << f(i,1)*fac;
+			}
+			else
+			{
+				cout << setw(15) << "0";
+			}
+
+			if( abs(f(i,2)) >output_acc)
+			{
+				cout << setw(15) << f(i,2)*fac;
+			}			
+			else
+			{
+				cout << setw(15) << "0";
+			}
 			cout << endl;
 		}	
 	}

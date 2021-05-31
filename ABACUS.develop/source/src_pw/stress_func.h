@@ -63,9 +63,9 @@ class Stress_Func
 	// 3) the stress from the ewald term (ion-ion intraction under 
 	//		periodic boundary conditions). 
 	void stress_ewa(
-	matrix& sigma,
-	const bool is_pw,
-	PW_Basis &pwb);     //ewald part in PW or LCAO basis
+		matrix& sigma,
+		const bool is_pw,
+		PW_Basis &pwb);     //ewald part in PW or LCAO basis
 
 	// 4) the stress from the local pseudopotentials
 	void stress_loc(matrix& sigma,
@@ -108,14 +108,16 @@ class Stress_Func
 	// 7) the stress from the non-local pseudopotentials
 	// nonlocal parts in pw basis sets
 	void stress_nl(matrix& sigma,
-		const int &nbands, // number of bands
-		const int &npwx); // max number of plane waves
+		       const int &nbands, // number of bands
+         	       const int &npwx,
+		       kvect &kp); // max number of plane waves
 
 
 	void get_dvnl1(
 			ComplexMatrix &vkb,
 			const int ik,
-			const int ipol);	//used in nonlocal part in PW basis
+			const int ipol,
+			kvect &kp);	//used in nonlocal part in PW basis
 
 	void dylmr2 (
 			const int nylm,
@@ -126,7 +128,8 @@ class Stress_Func
 
 	void get_dvnl2(
 			ComplexMatrix &vkb,
-			const int ik);		//used in nonlocal part in PW basis
+			const int ik,
+			kvect &kp);		//used in nonlocal part in PW basis
 
 	double Polynomial_Interpolation_nl(
 			const realArray &table,

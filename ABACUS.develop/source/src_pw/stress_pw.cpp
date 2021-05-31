@@ -56,25 +56,25 @@ void Stress_PW::cal_stress(matrix& sigmatot)
 	
 	//hartree contribution
 	stress_har(sigmahar, 1, pw);
-
-    //ewald contribution
-    stress_ewa(sigmaewa, 1, pw);
+ 
+        //ewald contribution
+    	stress_ewa(sigmaewa, 1, pw);
 
     //xc contribution: add gradient corrections(non diagonal)
     for(int i=0;i<3;i++)
 	{
        sigmaxc(i,i) = - (H_XC_pw::etxc - H_XC_pw::vtxc) / ucell.omega;
     }
-    stress_gga(sigmaxc, pw);
+    	stress_gga(sigmaxc, pw);
 
-    //local contribution
-    stress_loc(sigmaloc, 1, pw);
+        //local contribution
+        stress_loc(sigmaloc, 1, pw);
     
-    //nlcc
-    stress_cc(sigmaxcc, 1, pw);
+        //nlcc
+        stress_cc(sigmaxcc, 1, pw);
    
-    //nonlocal
-	stress_nl(sigmanl, NBANDS, wf.npwx);
+        //nonlocal
+	stress_nl(sigmanl, NBANDS, wf.npwx, kv);
 
 	//vdw term
 	stress_vdw(sigmavdw);

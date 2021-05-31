@@ -6,7 +6,8 @@
 void Stress_Func::stress_nl(
 	matrix& sigma,
 	const int &nbands, // number of bands
-	const int &npwx) // max number of plane wave basis 
+	const int &npwx,
+	kvect &kp) // max number of plane wave basis 
 {
 	TITLE("Stress_Func","stres_nl");
 	timer::tick("Stress_Func","stres_nl",'F');
@@ -42,7 +43,7 @@ void Stress_Func::stress_nl(
 
 	ComplexMatrix vkb2(nkb, npwx);
 
-    for (int ik = 0;ik < kv.nks;ik++)
+    for (int ik = 0;ik < kp.nks;ik++)
     {
 		for(int i=0;i<3;i++)
 		{
@@ -52,10 +53,10 @@ void Stress_Func::stress_nl(
 		  
 		if (NSPIN==2) 
 		{
-		 	CURRENT_SPIN = kv.isk[ik];
+		 	CURRENT_SPIN = kp.isk[ik];
 		}
 
-		wf.npw = kv.ngk[ik];
+		wf.npw = kp.ngk[ik];
 
 		// generate vkb
 		if (ppcell.nkb > 0)
@@ -82,11 +83,11 @@ void Stress_Func::stress_nl(
 			
 		for(int i=0;i<3;i++) 
 		{
-			get_dvnl1(vkb0[i],ik,i);
+			get_dvnl1(vkb0[i], ik, i, kp);
 		}
 				
 		// call subroutine of this class
-		get_dvnl2(vkb2,ik);
+		get_dvnl2(vkb2, ik, kp);
 
 		Vector3<double> qvec;
 		double qvec0[3];
@@ -255,7 +256,8 @@ void Stress_Func::get_dvnl1
 (
 	ComplexMatrix &vkb,
 	const int ik,
-	const int ipol
+	const int ipol,
+	kvect &kp
 )
 {
 	TITLE("Stress_Func","get_dvnl1");
@@ -266,13 +268,8 @@ void Stress_Func::get_dvnl1
 		return;
 	}
 
-	const int npw = kv.ngk[ik];
+	const int npw = kp.ngk[ik];
 	const int nhm = ppcell.nhm;
-
-	int ig=0;
-	int ia=0;
-	int nb=0;
-	int ih=0;
 
 	matrix vkb1(nhm, npw);
 	vkb1.zero_out();
@@ -281,7 +278,7 @@ void Stress_Func::get_dvnl1
 
 	matrix dylm(x1, npw);
 	Vector3<double> *gk = new Vector3<double>[npw];
-	for (ig = 0;ig < npw;ig++)
+	for (int ig = 0;ig < npw;ig++)
 	{
 		gk[ig] = wf.get_1qvec_cartesian(ik, ig);
 	}
@@ -296,9 +293,9 @@ void Stress_Func::get_dvnl1
 		const int nbeta = ucell.atoms[it].nbeta;
 		const int nh = ucell.atoms[it].nh;
 
-		for (nb = 0;nb < nbeta;nb++)
+		for (int nb = 0;nb < nbeta;nb++)
 		{
-			for (ig = 0;ig < npw;ig++)
+			for (int ig = 0;ig < npw;ig++)
 			{
 				const double gnorm = gk[ig].norm() * ucell.tpiba;
 				vq [ig] = PolyInt::Polynomial_Interpolation(
@@ -306,12 +303,12 @@ void Stress_Func::get_dvnl1
 			} 
 
 			// add spherical harmonic part
-			for (ih = 0;ih < nh;ih++)
+			for (int ih = 0;ih < nh;ih++)
 			{
 				if (nb == ppcell.indv(it, ih))
 				{
 					const int lm = static_cast<int>( ppcell.nhtolm(it, ih) );
-					for (ig = 0;ig < npw;ig++)
+					for (int ig = 0;ig < npw;ig++)
 					{
 						vkb1(ih, ig) = dylm(lm, ig) * vq [ig];
 					}
@@ -324,13 +321,13 @@ void Stress_Func::get_dvnl1
 
 		// vkb1 contains all betas including angular part for type nt
 		// now add the structure factor and factor (-i)^l
-		for (ia=0; ia<ucell.atoms[it].na; ia++)
+		for (int ia=0; ia<ucell.atoms[it].na; ia++)
 		{
 			complex<double> *sk = wf.get_sk(ik, it, ia);
-			for (ih = 0;ih < nh;ih++)
+			for (int ih = 0;ih < nh;ih++)
 			{
 				complex<double> pref = pow( NEG_IMAG_UNIT, ppcell.nhtol(it, ih));      //?
-				for (ig = 0;ig < npw;ig++)
+				for (int ig = 0;ig < npw;ig++)
 				{
 					vkb(jkb, ig) = vkb1(ih, ig) * sk [ig] * pref;
 				}
@@ -348,7 +345,8 @@ void Stress_Func::get_dvnl1
 
 void Stress_Func::get_dvnl2(
 	ComplexMatrix &vkb,
-	const int ik)
+	const int ik,
+	kvect &kp)
 {
 	TITLE("Stress_Func","get_dvnl2");
 
@@ -358,13 +356,8 @@ void Stress_Func::get_dvnl2(
 		return;
 	}
 
-	const int npw = kv.ngk[ik];
+	const int npw = kp.ngk[ik];
 	const int nhm = ppcell.nhm;
-
-	int ig=0;
-	int ia=0;
-	int nb=0;
-	int ih=0;
 
 	matrix vkb1(nhm, npw);
 
@@ -373,7 +366,7 @@ void Stress_Func::get_dvnl2(
 
 	matrix ylm(x1, npw);
 	Vector3<double> *gk = new Vector3<double>[npw];
-	for (ig = 0;ig < npw;ig++)
+	for (int ig = 0;ig < npw;ig++)
 	{
 		gk[ig] = wf.get_1qvec_cartesian(ik, ig);
 	}
@@ -386,9 +379,9 @@ void Stress_Func::get_dvnl2(
 		const int nbeta = ucell.atoms[it].nbeta;
 		const int nh = ucell.atoms[it].nh;
 
-		for (nb = 0;nb < nbeta;nb++)
+		for (int nb = 0;nb < nbeta;nb++)
 		{
-			for (ig = 0;ig < npw;ig++)
+			for (int ig = 0;ig < npw;ig++)
 			{
 				const double gnorm = gk[ig].norm() * ucell.tpiba;
 	//cout << "\n gk[ig] = " << gk[ig].x << " " << gk[ig].y << " " << gk[ig].z;
@@ -399,12 +392,12 @@ void Stress_Func::get_dvnl2(
 			} // enddo
 
 							// add spherical harmonic part
-			for (ih = 0;ih < nh;ih++)
+			for (int ih = 0;ih < nh;ih++)
 			{
 				if (nb == ppcell.indv(it, ih))
 				{
 					const int lm = static_cast<int>( ppcell.nhtolm(it, ih) );
-					for (ig = 0;ig < npw;ig++)
+					for (int ig = 0;ig < npw;ig++)
 					{
 						vkb1(ih, ig) = ylm(lm, ig) * vq [ig];
 					}
@@ -414,13 +407,13 @@ void Stress_Func::get_dvnl2(
 
 		// vkb1 contains all betas including angular part for type nt
 		// now add the structure factor and factor (-i)^l
-		for (ia=0; ia<ucell.atoms[it].na; ia++)
+		for (int ia=0; ia<ucell.atoms[it].na; ia++)
 		{
 			complex<double> *sk = wf.get_sk(ik, it, ia);
-			for (ih = 0;ih < nh;ih++)
+			for (int ih = 0;ih < nh;ih++)
 			{
 				complex<double> pref = pow( NEG_IMAG_UNIT, ppcell.nhtol(it, ih));      //?
-				for (ig = 0;ig < npw;ig++)
+				for (int ig = 0;ig < npw;ig++)
 				{
 					vkb(jkb, ig) = vkb1(ih, ig) * sk [ig] * pref;
 				}
@@ -477,8 +470,7 @@ void Stress_Func::dylmr2(
     //     using simple numerical derivation (SdG)
     //     The spherical harmonics are calculated in ylmr2
     //-----------------------------------------------------------------------
-	int ig=0;
-	int lm=0;
+	
 	// counter on g vectors
 	// counter on l,m component
 
@@ -501,13 +493,13 @@ void Stress_Func::dylmr2(
 	dylm.zero_out();
 	ylmaux.zero_out();
 
-	for( ig = 0;ig< ngy;ig++)
+	for(int ig = 0;ig< ngy;ig++)
 	{
 		gx[ig] = gk[ig];
 	}
 
 	//$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ig)
-	for( ig = 0;ig< ngy;ig++)
+	for(int ig = 0;ig< ngy;ig++)
 	{
 		dg [ig] = delta * gx[ig].norm() ;
 		if (gx[ig].norm2() > 1e-9) 
@@ -522,7 +514,7 @@ void Stress_Func::dylmr2(
 	//$OMP END PARALLEL DO
 
 	//$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ig)
-	for(ig = 0;ig< ngy;ig++)
+	for(int ig = 0;ig< ngy;ig++)
 	{
 		if(ipol==0)
 		{
@@ -541,7 +533,7 @@ void Stress_Func::dylmr2(
 
 	YlmReal::Ylm_Real(nylm, ngy, gx, dylm);
 	//$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ig)
-	for(ig = 0;ig< ngy;ig++)
+	for(int ig = 0;ig< ngy;ig++)
 	{
 		if(ipol==0)
 		{
@@ -561,18 +553,18 @@ void Stress_Func::dylmr2(
 	YlmReal::Ylm_Real(nylm, ngy, gx, ylmaux);
 
 	//  zaxpy ( - 1.0, ylmaux, 1, dylm, 1);
-	for(lm=0; lm<nylm; lm++)
+	for(int lm=0; lm<nylm; lm++)
 	{
-		for(ig=0; ig<ngy; ig++)
+		for(int ig=0; ig<ngy; ig++)
 		{
 			dylm(lm,ig) = dylm(lm,ig) - ylmaux(lm,ig);
 		}
 	}
 
-	for(lm=0; lm<nylm; lm++)
+	for(int lm=0; lm<nylm; lm++)
 	{
 		//$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ig)
-		for(ig=0; ig<ngy; ig++)
+		for(int ig=0; ig<ngy; ig++)
 		{
 			dylm (lm,ig) = dylm(lm,ig) * 0.5 * dgi [ig];
 		}
